@@ -5,13 +5,20 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TankFrame extends Frame {
 
-    Tank myTank = new Tank(200, 200, Dir.Down);
+    static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
+
+
+    Tank myTank = new Tank(200, 200, Dir.Down, this);
+
+    List<Bullet> bullets = new ArrayList<Bullet>();
 
     public TankFrame() {
-        this.setSize(800, 600);
+        this.setSize(GAME_WIDTH, GAME_HEIGHT);
         this.setTitle("tank");
         this.setVisible(true);
         this.setResizable(false);
@@ -28,10 +35,42 @@ public class TankFrame extends Frame {
 
     }
 
+    Image offScreenImage = null;
+
+    /**
+     * 解决双缓冲区导致界面闪烁问题
+     * @param g
+     */
+    @Override
+    public void update(Graphics g) {
+        if(offScreenImage == null) {
+            offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.BLACK);
+        gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        gOffScreen.setColor(c);
+        paint(gOffScreen);
+        g.drawImage(offScreenImage, 0, 0, null);
+    }
+
+
     @Override
     public void paint(Graphics g) {
+        Color c = g.getColor();
+        g.setColor(Color.WHITE);
+        g.drawString("子弹的数量:" + bullets.size(), 10, 60);
+        g.setColor(c);
+
         // 绘制我的坦克
         myTank.paint(g);
+
+        // 绘制子弹
+        for (int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).paint(g);
+
+        }
     }
 
     /**
@@ -84,16 +123,26 @@ public class TankFrame extends Frame {
                 case KeyEvent.VK_DOWN:
                     bD = false;
                     break;
+
+                case KeyEvent.VK_CONTROL:
+                    myTank.fire();
+                    break;
                 default:
                     break;
             }
         }
 
         private void setDirection() {
-            if (bL) myTank.setDir(Dir.Left);
-            if (bR) myTank.setDir(Dir.Right);
-            if (bU) myTank.setDir(Dir.Up);
-            if (bD) myTank.setDir(Dir.Down);
+            // 判断是否运动状态
+            if (!bL && !bR && !bU && !bD) {
+                myTank.setMoving(false);
+            } else {
+                myTank.setMoving(true);
+                if (bL) myTank.setDir(Dir.Left);
+                if (bR) myTank.setDir(Dir.Right);
+                if (bU) myTank.setDir(Dir.Up);
+                if (bD) myTank.setDir(Dir.Down);
+            }
         }
     }
 }

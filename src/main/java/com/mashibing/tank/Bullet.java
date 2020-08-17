@@ -2,19 +2,18 @@ package com.mashibing.tank;
 
 import java.awt.*;
 
-public class Tank {
+public class Bullet {
+
     private int x;
     private int y;
-    private int TANK_WIDTH = 50;
-    private int TANK_HEIGHT = 50;
-    private final int speed = 10;
+    private int BULLET_WIDTH = 30;
+    private int BULLET_HEIGHT = 30;
+    private final int speed = 4;
     Dir dir = Dir.Down;
-
-    private boolean isMoving = false;
-
+    private boolean isLiving = true;
     private TankFrame tankFrame = null;
 
-    public Tank(int x, int y, Dir dir, TankFrame tankFrame) {
+    public Bullet(int x, int y, Dir dir, TankFrame tankFrame) {
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -22,18 +21,19 @@ public class Tank {
     }
 
     public void paint(Graphics g) {
+        if (!isLiving) {
+            tankFrame.bullets.remove(this);
+        }
+
         Color color = g.getColor();
-        g.setColor(Color.BLUE);
-        g.fillRect(this.x, this.y, TANK_WIDTH, TANK_HEIGHT);
+        g.setColor(Color.RED);
+        g.fillOval(x, y, BULLET_WIDTH, BULLET_WIDTH);
         g.setColor(color);
 
         move();
     }
 
     private void move() {
-        if (!isMoving) {
-            return;
-        }
 
         if (this.dir == Dir.Left) {
             x -= speed;
@@ -44,19 +44,12 @@ public class Tank {
         } else if (this.dir == Dir.Down) {
             y += speed;
         }
+
+        if (x < 0 || x > TankFrame.GAME_WIDTH || y < 0 || y > TankFrame.GAME_HEIGHT) {
+            isLiving = false;
+        }
     }
 
-    public void fire() {
-        tankFrame.bullets.add(new Bullet(this.x, this.y, this.dir, this.tankFrame));
-    }
-
-    public boolean isMoving() {
-        return isMoving;
-    }
-
-    public void setMoving(boolean moving) {
-        isMoving = moving;
-    }
 
     public int getX() {
         return x;
