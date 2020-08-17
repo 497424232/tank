@@ -1,5 +1,7 @@
 package com.mashibing.tank;
 
+import com.mashibing.tank.common.ResourceMgr;
+
 import java.awt.*;
 
 public class Tank {
@@ -22,10 +24,22 @@ public class Tank {
     }
 
     public void paint(Graphics g) {
-        Color color = g.getColor();
-        g.setColor(Color.BLUE);
-        g.fillRect(this.x, this.y, TANK_WIDTH, TANK_HEIGHT);
-        g.setColor(color);
+        switch (this.dir) {
+            case Up:
+                g.drawImage(ResourceMgr.goodTankU, x, y, null);
+                break;
+            case Left:
+                g.drawImage(ResourceMgr.goodTankL, x, y, null);
+                break;
+            case Down:
+                g.drawImage(ResourceMgr.goodTankD, x, y, null);
+                break;
+            case Right:
+                g.drawImage(ResourceMgr.goodTankR, x, y, null);
+                break;
+            default:
+                break;
+        }
 
         move();
     }
