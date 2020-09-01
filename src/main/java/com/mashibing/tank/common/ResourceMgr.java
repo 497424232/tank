@@ -13,6 +13,11 @@ public class ResourceMgr {
 
     static {
         try {
+            tankL = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/tankL.gif"));
+            tankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/tankU.gif"));
+            tankR = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/tankR.gif"));
+            tankD = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/tankD.gif"));
+
             goodTankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/GoodTank1.png"));
             goodTankL = ImageUtil.rotateImage(goodTankU, -90);
             goodTankR = ImageUtil.rotateImage(goodTankU, 90);
@@ -21,4 +26,5 @@ public class ResourceMgr {
             e.printStackTrace();
         }
     }
+
 }
